@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Client Test</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Client Test</h1>
+    <button onclick="joinRoom()">Join Room</button>
+    <button onclick="sendLocation()">Send Location</button>
+    <button onclick="sendChat()">Send Chat Message</button>
+
+    <script>
+        const socket = io("http://localhost:3000");  // Ganti URL sesuai dengan server Anda
+
+        // Fungsi untuk join room
+        function joinRoom() {
+            socket.emit("joinRoom", {
+                user: "user123",
+                username: "TestUser",
+                room: "testRoom",
+                profileUrl: "https://example.com/profile.jpg"
+            });
+        }
+
+        // Mendengarkan event 'terhubung' dari server
+        socket.on("terhubung", (message) => {
+            console.log(message);
+        });
+
+        // Mendengarkan event perubahan lokasi
+        socket.on("locationChanged", (data) => {
+            console.log("Location Updated:", data);
+        });
+
+        // Mendengarkan pesan chat dari server
+        socket.on("chatMessage", (data) => {
+            console.log("New Chat Message:", data);
+        });
+
+        // Mendengarkan daftar pengguna di room
+        socket.on("roomUsers", (data) => {
+            console.log("Room Users:", data);
+        });
+
+        // Mengirim update lokasi
+        function sendLocation() {
+            socket.emit("locationChanged", {
+                user: "user123",
+                lat: -6.200000,
+                long: 106.816666
+            });
+        }
+
+        // Mengirim pesan chat
+        function sendChat() {
+            socket.emit("chatMessage", {
+                userId: "user123",
+                message: "Hello, this is a test chat message!"
+            });
+        }
+    </script>
+</body>
+</html>
